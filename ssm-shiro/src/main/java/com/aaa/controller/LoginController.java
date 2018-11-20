@@ -30,7 +30,7 @@ public class LoginController {
 				e.printStackTrace();
 			}
 		}
-		return "success";
+		return "file/success";
 	}
 
 	/**

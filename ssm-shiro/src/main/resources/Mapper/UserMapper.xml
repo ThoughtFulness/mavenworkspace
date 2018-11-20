@@ -9,7 +9,7 @@
         CONCAT(u.username,u.password_salt) AS "salt"
         FROM users u JOIN user_role r
         on u.id=r.userId
-        WHERE u.username=#{userName}
+        WHERE u.username=#{username}
     </select>
 
     <select id="selectRole" parameterType="String" resultType="String">
