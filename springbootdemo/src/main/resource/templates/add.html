@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../jquery.min.js"></script>
+    <style>
+        table{
+            width:600px;
+            height:300px;
+            list-style: none;
+            border-collapse: collapse;
+            background-color: lightskyblue;
+        }
+        td{
+            border:1px solid black;
+            text-align: center;
+        }
+        input[type="text"]{
+            width:220px;
+            height:30px;
+            float:left;
+        }
+        input[type="submit"]{
+            width:100px;
+            height:30px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $("#sub").click(function () {
+                var param = {
+                    "eName":$("#eName").val(),
+                    "job":$("#job").val(),
+                    "salary":$("#salary").val(),
+                    "comm":$("#comm").val(),
+                    "hiredDate":$("#hiredDate").val(),
+                    "mgr":$("#mgr").val(),
+                }
+
+                $.ajax({
+                    url: "/sb/emp/add",
+                    type: "POST",
+                    contentType : "application/json",
+                    dataType:"json",
+                    data : JSON.stringify(param),
+                    success : function(data) {
+                        location.href = "emplist.html";
+                    }
+
+
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+<center>
+
+    <table>
+        <h3>新增员工</h3>
+        <tr>
+            <td><input type = "hidden" name ="empNo" id="empNo"/></td>
+        </tr>
+        <tr>
+            <td>员工姓名：</td>
+            <td><input type = "text" name ="eName" id="eName"/></td>
+        </tr>
+        <tr>
+            <td>工作类型：</td>
+            <td><input type = "text" name ="job" id="job"/></td>
+        </tr>
+        <tr>
+            <td>薪酬：</td>
+            <td><input type = "text" name = "salary" id="salary"/></td>
+        </tr>
+        <tr>
+            <td>奖金：</td>
+            <td><input type = "text" name = "comm" id="comm"/></td>
+        </tr>
+        <tr>
+            <td>入职时间：</td>
+            <td><input type = "text" name = "hiredDate" id="hiredDate"/></td>
+        </tr>
+        <tr>
+            <td>领导工号：</td>
+            <td><input type = "text" name = "mgr" id="mgr"/></td>
+        <tr>
+            <td colspan="2" style ="text-align: center"><input type = "button" value = "新增" id="sub"/></td>
+        </tr>
+    </table>
+
+</center>
+</body>
+</html>

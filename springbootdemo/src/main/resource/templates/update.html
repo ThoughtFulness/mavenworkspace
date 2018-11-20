@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户修改</title>
+    <script src="../jquery.min.js"></script>
+    <style>
+        table{
+            width:600px;
+            height:300px;
+            list-style: none;
+            border-collapse: collapse;
+            background-color: lightskyblue;
+        }
+        td{
+            border:1px solid black;
+            text-align: center;
+        }
+        input[type="text"]{
+            width:220px;
+            height:30px;
+            float:left;
+        }
+        input[type="submit"]{
+            width:100px;
+            height:30px;
+        }
+    </style>
+    <script>
+        $(function () {
+            /* 用途: 接收地直栏参数 取id=1 根据ID的值 */
+            var urlinfo = window.location.href; //获取当前页面的url
+            var len = urlinfo.length;//获取url的长度
+            var offset = urlinfo.indexOf("?");//设置参数字符串开始的位置
+            var newsidinfo = urlinfo.substr(offset, len);//取出参数字符串 这里会获得类似“id=1”这样的字符串
+            var newsids = newsidinfo.split("=");//对获得的参数字符串按照“=”进行分割
+            var newsid = newsids[1];//得到参数值
+            //var newsname = newsids[0];//得到参数名字
+            var empNo = newsid;
+            //alert(empNo);
+
+            $.ajax({
+                url: "/sb/emp/getById",
+                type: "POST",
+                contentType: "application/json",
+                dataType:"json",
+                data: JSON.stringify(empNo),
+                success: function (data) {
+                    $("#empNo").val(data[0].EMPNO);
+                    $("#eName").val(data[0].ENAME);
+                    $("#job").val(data[0].JOB);
+                    $("#salary").val(data[0].SAL);
+                    $("#comm").val(data[0].COMM);
+                }
+            });
+        });
+        
+        function btn() {
+            var param={
+                "empNo":$("#empNo").val(),
+                "eName":$("#eName").val(),
+                "job":$("#job").val(),
+                "salary":$("#salary").val(),
+                "comm":$("#comm").val(),
+            }
+            $.ajax({
+                url: "/sb/emp/update",
+                type: "POST",
+                contentType : "application/json",
+                dataType:"json",
+                data : JSON.stringify(param),
+                success : function(data) {
+                    alert("修改成功");
+                    location.href = "emplist.html";
+                }
+
+
+            })
+        }
+    </script>
+</head>
+<body>
+
+
+<center>
+    <h3 align="center">员工更新</h3>
+    <table>
+        <tr>
+            <td><input type = "hidden" name ="empNo" id="empNo"/></td>
+        </tr>
+        <tr>
+            <td>员工姓名：</td>
+            <td><input type = "text" name ="eName" id="eName"/></td>
+        </tr>
+        <tr>
+            <td>职位：</td>
+            <td><input type = "text" name ="job" id="job"/></td>
+        </tr>
+        <tr>
+            <td>薪酬：</td>
+            <td><input type = "text" name = "salary" id="salary"/></td>
+        </tr>
+        <tr>
+            <td>奖金：</td>
+            <td><input type = "text" name = "comm" id="comm"/></td>
+        </tr>
+        <tr>
+            <td colspan="2" style ="text-align: center"><input type = "button" id="btn" onclick="btn()" value = "修改"/></td>
+        </tr>
+
+    </table>
+</center>
+
+</body>
+</html>

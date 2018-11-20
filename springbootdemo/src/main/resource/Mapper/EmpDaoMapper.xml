@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.my.sm.dao.EmpDao">
+    <!--查询-->
+    <select id="getList" resultType="emp">
+        select empno as empNo,ename as eName,job,sal as salary,comm,to_char(hiredate,'yyyy-mm-dd') as hireDate,
+        (select ename from emp b where b.empno=a.mgr)  as mgrName,(select dname from dept where deptno=a.deptno) as deptName
+        from emp a
+        <where>
+            <if test="ename!=null and ename!=''">
+                and ename like '%'||#{ename}||'%'
+            </if>
+        </where>
+        order by ${sort} ${order}
+
+        <!--${}取值。原封不定的取出数据，相当于占位符 可以进入 sql注入 #{} 防止sql注入-->
+    </select>
+    <!--新增-->
+    <insert id="addEmp">
+        insert into emp(empno,ename,job,sal,comm,hiredate,mgr) values(SEQ_EMP_ID.nextval,#{eName},#{job},#{salary},#{comm},sysdate,#{mgr})
+    </insert>
+    <!--删除-->
+    <delete id="delete">
+         delete from emp where empno=#{empNo}
+    </delete>
+    <!--通过ID查询-->
+    <select id="getListEmp" resultType="map">
+        select * from emp where empno=#{empNo}
+    </select>
+    <!--更新-->
+    <update id="update">
+        update emp set ename=#{eName,jdbcType=VARCHAR},job=#{job,jdbcType=VARCHAR},sal=#{salary,jdbcType=NUMERIC},comm=#{comm,jdbcType=NUMERIC} where empno=#{empNo,jdbcType=NUMERIC}
+    </update>
+    <!--调用存储过程，根据部门编号获取人员列表 -->
+    <select id="getProListByDeptNo" parameterType="map" statementType="CALLABLE">
+        <!--deptNo 入参 名称可以随便写 csrEmp 出参 名字随便写 这两个参数需要跟serviceImpl出参入参对应  resultMap=empResult}跟结果映射resultMap 里面的id对应-->
+        call pkg_emp.pro_query_emp_bydeptno(#{deptNo,jdbcType=INTEGER,mode=IN},#{csrEmp,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=empResult})
+    </select>
+    <!--结果映射-->
+    <resultMap id="empResult" type="emp">
+        <id column="empno" property="empNo"></id>
+        <result column="ename" property="eName"></result>
+        <result column="job" property="job"></result>
+        <result column="sal" property="salary"></result>
+        <result column="hiredate" property="hireDate"></result>
+        <result column="comm" property="comm"></result>
+        <result column="mgr" property="mgrName"></result>
+    </resultMap>
+
+</mapper>
